@@ -1,23 +1,34 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+
+export const metadata: Metadata = {
+  title: "Sayfa bulunamadı",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (
-    <div className="editorial flex min-h-[70svh] flex-col justify-end pb-20 pt-40">
-      <p className="label">404</p>
-      <h1 className="mt-4 max-w-3xl font-serif text-[clamp(3rem,7vw,6rem)] leading-[0.92]">
-        Aradığınız sayfa yok.
-      </h1>
-      <p className="mt-6 max-w-md text-muted">
-        Adres değişmiş ya da hiç açılmamış olabilir. Projelere ya da ana sayfaya dönebilirsiniz.
+    <div className="relative flex min-h-svh flex-col justify-center overflow-hidden pt-28 pb-24">
+      <p
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[58%] font-serif text-[clamp(11rem,38vw,26rem)] leading-none font-medium text-ink/[0.045] select-none"
+      >
+        404
       </p>
-      <div className="mt-8 flex gap-6 text-sm tracking-[0.14em] uppercase">
-        <Link href="/" className="link-underline">
-          Ana sayfa
-        </Link>
-        <Link href="/projeler" className="link-underline">
-          Projeler
-        </Link>
-      </div>
+      <article className="editorial relative max-w-3xl">
+        <p className="label">Sayfa bulunamadı</p>
+        <h1 className="mt-5 font-serif text-[clamp(2.8rem,6vw,5.5rem)] leading-[0.92]">
+          Bu adres stüdyoda yok.
+        </h1>
+        <p className="mt-6 max-w-md text-lg leading-8 text-muted">
+          Yazılan yol tanınmıyor, taşınmış ya da hiç açılmamış olabilir. Ana sayfadan veya proje
+          arşivinden devam edebilirsiniz.
+        </p>
+        <div className="btn-group mt-10">
+          <ButtonLink href="/">Ana sayfa</ButtonLink>
+          <ButtonLink href="/projeler">Projeler</ButtonLink>
+        </div>
+      </article>
     </div>
   );
 }

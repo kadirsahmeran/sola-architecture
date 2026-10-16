@@ -56,7 +56,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="tr" className={`${serif.variable} ${sans.variable} h-full antialiased`}>
-      <body className="min-h-full bg-canvas text-ink">
+      <body className="min-h-svh bg-canvas text-ink">
         <a
           href="#icerik"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[70] focus:bg-paper focus:px-4 focus:py-2"
@@ -64,9 +64,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           İçeriğe geç
         </a>
         <SmoothScrollProvider>
-          <div className="flex min-h-full flex-col">
+          <div className="flex min-h-svh flex-col">
             <Header />
-            <main id="icerik" className="flex-1">
+            <main id="icerik" className="flex min-h-svh flex-1 shrink-0 flex-col">
               {children}
             </main>
             <Footer />
