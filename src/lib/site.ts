@@ -9,7 +9,7 @@ export const site = {
     "Mimari tasarım, iç mimarlık ve yaşam alanlarına özgün bir bakış. SOLA, mekânın ışığını, malzemesini ve gündelik ritmini birlikte kuran bir stüdyo kimliğidir.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   locale: "tr_TR",
-  email: "studio@example.com",
+  email: "kadirsahmeran3@gmail.com",
   city: "İstanbul",
   country: "Türkiye",
   contentUpdated: "2026-10-01",
