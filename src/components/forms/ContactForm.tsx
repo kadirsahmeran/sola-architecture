@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { submitInquiry } from "@/app/iletisim/actions";
+import { submitNetlifyForm } from "@/lib/submissions/netlify-form";
+import { writeInquiryReceipt } from "@/lib/submissions/receipt";
 import {
   budgetOptions,
   inquirySchema,
@@ -180,6 +182,31 @@ export function ContactForm() {
           }
         }
         setServerMessage(result.message);
+        return;
+      }
+      if (result.channel === "netlify") {
+        const posted = await submitNetlifyForm(values, file);
+        if (!posted) {
+          setServerMessage(
+            "Başvuru Netlify Forms’a yazılamadı. Gönderdiğiniz bilgiler saklanmadı; formu yeniden deneyebilirsiniz.",
+          );
+          return;
+        }
+        writeInquiryReceipt({
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          projectType: values.projectType,
+          location: values.location,
+          budget: values.budget,
+          message: values.message,
+          fileName: file?.name ?? "Eklenmedi",
+          createdAt: new Date().toISOString(),
+        });
+        writeSentFlag();
+        clearFormDom();
+        reset(defaults);
+        router.push("/iletisim/tesekkur");
         return;
       }
       writeSentFlag();

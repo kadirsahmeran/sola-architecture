@@ -58,9 +58,11 @@ Studio name, email, city, and navigation live in `src/lib/site.ts`. Project, ser
 
 ## Inquiry form
 
-Contact submissions are validated on the client and again in a server action. A successful save redirects to `/iletisim/sonuc/[id]`. Failed writes do not fake success; the form keeps the user’s input.
+Contact submissions are validated on the client and again in a server action. Failed writes do not fake success; the form keeps the user’s input.
 
-Records are stored on disk under `data/submissions/` through a small repository interface (`src/lib/submissions/`). That folder is gitignored. Swap the file adapter for another backend without changing the form.
+**Local development:** a successful save writes to `data/submissions/` and redirects to `/iletisim/sonuc/[id]`. That folder is gitignored.
+
+**Netlify:** `NEXT_PUBLIC_FORM_TARGET=netlify` is set in `netlify.toml`. After validation the browser posts to Netlify Forms (`project-inquiry` via `/netlify-forms.html`). Only a successful Forms response redirects to `/iletisim/tesekkur`. Enable the form and notification email in the Netlify dashboard after the first deploy. File uploads in Forms require a paid Netlify plan; submissions without a file still work on the free plan.
 
 Uploads: PDF, JPEG, PNG, or WebP, maximum 8 MB, checked by MIME type, extension, and file signature.
 
@@ -88,7 +90,19 @@ Public routes:
 | `/hakkimizda` | About |
 | `/blog`, `/blog/[slug]` | Journal |
 | `/iletisim` | Contact |
-| `/iletisim/sonuc/[id]` | Inquiry receipt |
+| `/iletisim/sonuc/[id]` | Local disk receipt |
+| `/iletisim/tesekkur` | Netlify Forms receipt |
+
+## Deploy on Netlify
+
+Netlify applies its Next.js adapter automatically. Do not pin `@netlify/plugin-nextjs`.
+
+1. Push this repository to GitHub or GitLab.
+2. In Netlify: **Add new site → Import an existing project** and select the repo.
+3. Build command `npm run build`, publish directory `.next`, Node 20 — already in `netlify.toml`.
+4. Set `NEXT_PUBLIC_SITE_URL` to the live origin (for example `https://your-site.netlify.app`).
+5. After the first production deploy, open **Forms** in the Netlify dashboard, confirm `project-inquiry`, and add a notification email.
+6. Replace `studio@example.com` in `src/lib/site.ts` before treating the site as live.
 
 ## Notes
 

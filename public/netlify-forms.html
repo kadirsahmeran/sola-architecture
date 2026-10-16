@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <title>SOLA başvuru</title>
+  </head>
+  <body>
+    <form
+      name="project-inquiry"
+      method="POST"
+      action="/netlify-forms.html"
+      netlify
+      data-netlify="true"
+      netlify-honeypot="company"
+      data-netlify-honeypot="company"
+      enctype="multipart/form-data"
+    >
+      <input type="hidden" name="form-name" value="project-inquiry" />
+      <p hidden>
+        <label>Şirket <input name="company" /></label>
+      </p>
+      <input name="name" />
+      <input name="email" type="email" />
+      <input name="phone" />
+      <input name="projectType" />
+      <input name="location" />
+      <input name="budget" />
+      <textarea name="message"></textarea>
+      <input name="kvkk" />
+      <input name="file" type="file" />
+    </form>
+  </body>
+</html>

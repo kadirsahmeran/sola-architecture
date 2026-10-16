@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/security/rate-limit";
+import { usesNetlifyForms } from "@/lib/submissions/channel";
 import { getSubmissionRepository } from "@/lib/submissions/repository";
 import {
   fieldErrorsFromZod,
@@ -10,7 +11,8 @@ import {
 } from "@/lib/validations/inquiry";
 
 export type InquiryResult =
-  | { ok: true; id: string }
+  | { ok: true; channel: "file"; id: string }
+  | { ok: true; channel: "netlify" }
   | { ok: false; message: string; fieldErrors?: Record<string, string> };
 
 export async function submitInquiry(formData: FormData): Promise<InquiryResult> {
@@ -56,6 +58,10 @@ export async function submitInquiry(formData: FormData): Promise<InquiryResult> 
     return { ok: false, message: fileError, fieldErrors: { file: fileError } };
   }
 
+  if (usesNetlifyForms()) {
+    return { ok: true, channel: "netlify" };
+  }
+
   const id = crypto.randomUUID();
   try {
     await getSubmissionRepository().save(
@@ -82,5 +88,5 @@ export async function submitInquiry(formData: FormData): Promise<InquiryResult> 
     };
   }
 
-  return { ok: true, id };
+  return { ok: true, channel: "file", id };
 }

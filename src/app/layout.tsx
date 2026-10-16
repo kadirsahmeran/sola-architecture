@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { NetlifyDetectForm } from "@/components/forms/NetlifyDetectForm";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         </SmoothScrollProvider>
         <JsonLd data={organizationJsonLd()} />
+        <NetlifyDetectForm />
       </body>
     </html>
   );
