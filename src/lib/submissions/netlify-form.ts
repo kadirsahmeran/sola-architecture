@@ -22,26 +22,15 @@ export async function submitNetlifyForm(values: InquiryInput, file: File | null)
     body.set("file", file);
     response = await fetch(NETLIFY_FORM_PATH, {
       method: "POST",
-      headers: { Accept: "application/json" },
       body,
     });
   } else {
     response = await fetch(NETLIFY_FORM_PATH, {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(fields).toString(),
     });
   }
 
-  if (!response.ok) return false;
-
-  const type = (response.headers.get("content-type") ?? "").toLowerCase();
-  if (type.includes("application/json")) return true;
-
-  const text = await response.text();
-  const echoedBlueprint = text.includes(`name="${NETLIFY_FORM_NAME}"`);
-  return /thank you/i.test(text) && !echoedBlueprint;
+  return response.ok;
 }
