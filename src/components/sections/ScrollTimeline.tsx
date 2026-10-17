@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { StudioImage } from "@/components/ui/StudioImage";
 import { registerGsap } from "@/lib/gsap";
 import { processSteps } from "@/lib/site";
@@ -34,15 +35,22 @@ export function ScrollTimeline() {
     const match = gsap.matchMedia();
 
     match.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      const pin = section.querySelector<HTMLElement>("[data-pin]");
       const panels = gsap.utils.toArray<HTMLElement>("[data-panel]", section);
       const labels = gsap.utils.toArray<HTMLElement>("[data-step]", section);
+      if (!pin) return;
       let current = 0;
 
-      const setActive = (index: number) => {
+      const setActive = (index: number, instant: boolean) => {
         panels.forEach((panel, panelIndex) => {
+          const show = panelIndex === index;
+          if (instant) {
+            gsap.set(panel, { autoAlpha: show ? 1 : 0 });
+            return;
+          }
           gsap.to(panel, {
-            autoAlpha: panelIndex === index ? 1 : 0,
-            duration: 0.55,
+            autoAlpha: show ? 1 : 0,
+            duration: 0.35,
             overwrite: true,
           });
         });
@@ -51,31 +59,29 @@ export function ScrollTimeline() {
         });
       };
 
-      setActive(0);
-      const trigger = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=280%",
-          pin: "[data-pin]",
-          scrub: 0.4,
-          onUpdate: (self) => {
-            const index = Math.min(
-              processSteps.length - 1,
-              Math.floor(self.progress * processSteps.length),
-            );
-            if (index !== current) {
-              current = index;
-              setActive(index);
-            }
-          },
+      setActive(0, true);
+      const trigger = ScrollTrigger.create({
+        trigger: pin,
+        start: "top top",
+        end: "+=240%",
+        pin,
+        pinSpacing: true,
+        pinType: "transform",
+        anticipatePin: 1,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const index = Math.min(
+            processSteps.length - 1,
+            Math.floor(self.progress * processSteps.length),
+          );
+          if (index === current) return;
+          current = index;
+          setActive(index, Math.abs(self.getVelocity()) > 1200);
         },
       });
 
-      return () => {
-        trigger.scrollTrigger?.kill();
-        trigger.kill();
-      };
+      return () => trigger.kill();
     });
 
     return () => match.revert();
@@ -103,7 +109,7 @@ export function ScrollTimeline() {
       </div>
 
       <div ref={root} className="relative hidden lg:block">
-        <div data-pin className="h-svh">
+        <div data-pin className="h-svh overflow-clip">
           <div className="editorial grid h-full w-full grid-cols-12 gap-10 py-16 xl:gap-16">
             <div className="col-span-5 flex flex-col justify-center">
               <p className="label">06 — Süreç</p>
